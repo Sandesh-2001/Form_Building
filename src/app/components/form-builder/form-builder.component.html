@@ -1,0 +1,173 @@
+<div class="mt-5">
+  <h1>Form Builder</h1>
+  <form class="" [formGroup]="formsBuilder">
+    <div class="mb-3">
+      <label class="form-label" for="text">Question Text</label>
+      <input
+        type="text"
+        id="text"
+        class="form-control"
+        formControlName="text"
+      />
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="type">Type</label>
+      <select
+        formControlName="type"
+        class="form-select"
+        aria-label="Default select example"
+        (change)="typeChange(formsBuilder.value.type)"
+        id="options_id"
+      >
+        <option selected>Open this select menu</option>
+        <option value="text">text</option>
+        <option value="number">number</option>
+        <option value="email">Email</option>
+        <option value="password">Password</option>
+        <option value="checkbox">Checkbox</option>
+        <option value="radio">Radio</option>
+
+        <!-- 
+                <option value="1">radio</option>
+                <option value="2">checkbox</option> -->
+      </select>
+    </div>
+    <div
+      *ngIf="
+        checkGroup &&
+        (formsBuilder.value.type === 'checkbox' ||
+          formsBuilder.value.type === 'radio')
+      "
+      [formGroup]="checkGroup"
+    >
+      <div *ngIf="checkArray">
+        <div formArrayName="checkvalue">
+          <div *ngFor="let check of checkArray.controls; let index = index">
+            <div [formGroupName]="index">
+              <label [for]="'option' + index">Option {{ index + 1 }}</label>
+              <input
+                (keyup)="change()"
+                [id]="'option' + index"
+                type="text"
+                formControlName="check"
+              />
+              <button
+                class="btn btn-danger btn-sm"
+                (click)="removeCheck(index)"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" (click)="addCheck()">
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="modal">Modal Name</label>
+      <input
+        type="text"
+        id="modal"
+        class="form-control"
+        formControlName="name"
+      />
+    </div>
+
+    <!-- <div formArrayName="validation">
+      <div *ngFor="let item of validationArray.controls; let index = index">
+        <div [formGroupName]="index">
+          <label class="form-label" for="valid"></label>
+          <input
+            type="text"
+            class="form-control"
+            id="valid"
+            formControlName="validation"
+          />
+          <button class="btn btn-danger m-1" (click)="removeValid(index)">
+            Remove Validation
+          </button>
+        </div>
+      </div>
+      <button class="btn btn-primary m-1" (click)="addValid()">
+        Add Validation
+      </button>
+    </div> -->
+    <div class="mb-3">Validations</div>
+    <div class="requiredValid">
+      <input
+        type="checkbox"
+        #required
+        (change)="valid(required.value)"
+        id="required"
+        name="required"
+        value="required"
+      />
+      <label class="form-label" for="required"> Required</label><br />
+    </div>
+    <div class="emailValid">
+      <input
+        type="checkbox"
+        #email
+        (change)="valid(email.value)"
+        id="email"
+        name="email"
+        value="email"
+      />
+      <label class="form-label" for="email"> Email</label><br />
+    </div>
+    <div class="minlengthValid">
+      <input
+        type="checkbox"
+        #minlength
+        (change)="valid(minlength.value)"
+        id="minlength"
+        name="minlength"
+        [value]="'minlength'"
+      />
+      <label class="form-label" for="minlength"> MinLength</label><br />
+      <input
+        type="text"
+        name="min"
+        *ngIf="minInput"
+        [ngModelOptions]="{ standalone: true }"
+        (change)="valid(minlength.value, min)"
+        [(ngModel)]="min"
+        id="min_ip"
+        placeholder="Minimum length"
+        class="form-control"
+      />
+    </div>
+    <div class="maxlengthValid">
+      <input
+        type="checkbox"
+        #maxlength
+        (change)="valid(maxlength.value)"
+        id="maxlength"
+        name="maxlength"
+        [value]="'maxlength'"
+      />
+
+      <label class="form-label" for="maxlength"> MaxLength</label><br /><br />
+      <input
+        type="number"
+        *ngIf="maxInput"
+        [ngModelOptions]="{ standalone: true }"
+        (change)="valid(maxlength.value, max)"
+        [(ngModel)]="max"
+        id="max_id"
+        value="false"
+        placeholder="Maximum length"
+        class="form-control"
+      />
+    </div>
+
+    <div class="text-center">
+      <button type="submit" class="btn btn-success" (click)="addInArray()">
+        Add
+      </button>
+    </div>
+  </form>
+</div>

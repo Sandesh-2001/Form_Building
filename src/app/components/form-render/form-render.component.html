@@ -1,0 +1,135 @@
+<div class="mt-5">
+  <h1>Form Render</h1>
+  <form *ngIf="controlsArray" class="form" [formGroup]="renderForm">
+    <div formArrayName="controls">
+      <div *ngFor="let control of controlsArray?.controls; let index1 = index">
+        <div [formGroupName]="index1" *ngIf="labelArray[index1 + 1].text">
+          <label [for]="index1 + 'hii'" class="mb-3">{{
+            labelArray[index1 + 1].text
+          }}</label>
+          <div class="mb-3" *ngIf="this.option[index1] === undefined">
+            <input
+              [type]="labelArray[index1 + 1]?.type"
+              [id]="index1 + 'hii'"
+              formControlName="newControl"
+              #values
+              (keyup)="
+                setValue(
+                  index1,
+                  controlsArray,
+                  values.value,
+                  labelArray[index1 + 1].name
+                )
+              "
+              class="form-control"
+            />
+          </div>
+          <div *ngIf="this.option[index1] !== undefined">
+            <!-- <div *ngFor="let opt of option; let optionIndex = index"> -->
+            <div
+              *ngFor="let options of option[index1]; let optionIndex = index"
+            >
+              <ng-container>
+                <input
+                  [type]="labelArray[index1 + 1]?.type"
+                  [id]="optionIndex + 'hii' + index1"
+                  formControlName="newControl"
+                  (click)="
+                    optionChecked(
+                      options?.check,
+                      optionIndex,
+                      labelArray[index1 + 1].name,
+                      optionIndex + 'hii' + index1,
+                      labelArray[index1 + 1].type
+                    )
+                  "
+                  name="meow"
+                  class="form-control"
+                />
+
+                <label
+                  [for]="optionIndex + 'hii' + index1"
+                  class="form-label"
+                  >{{ options?.check }}</label
+                >
+              </ng-container>
+              <!-- </div> -->
+            </div>
+          </div>
+          <button class="btn btn-primary" (click)="showForm()">
+            Show Form
+          </button>
+          <div
+            class="text-danger"
+            *ngIf="
+              getControlFroError(index1) &&
+              getControlFroError(index1).touched == true &&
+              getControlFroError(index1).status == 'INVALID'
+            "
+          >
+            This field is invalid
+          </div>
+          <div
+            class="text-danger"
+            *ngIf="
+              getControlFroError(index1).touched == true &&
+              getControlFroError(index1) &&
+              getControlFroError(index1).errors?.email
+            "
+          >
+            Email type required
+          </div>
+          <div
+            class="text-danger"
+            *ngIf="
+              getControlFroError(index1).touched == true &&
+              getControlFroError(index1) &&
+              getControlFroError(index1).errors?.minlength
+            "
+          >
+            Minimum length error
+          </div>
+          <div
+            class="text-danger"
+            *ngIf="
+              getControlFroError(index1).touched == true &&
+              getControlFroError(index1) &&
+              getControlFroError(index1).errors?.maxlength
+            "
+          >
+            Maximum length error
+          </div>
+        </div>
+        <div class="text-end">
+          <button
+            class="btn btn-danger btn-sm"
+            (click)="removeControl(index1, labelArray[index1 + 1].name)"
+          >
+            Remove Control
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button
+      class="btn btn-primary mt-5"
+      [disabled]="renderForm.invalid"
+      (click)="submit()"
+      *ngIf="!isEmptyForm"
+    >
+      <span *ngIf="isSubmitSpin" role="status" class="fw-bold"
+        >Submitting...</span
+      >
+      <span *ngIf="!isSubmitSpin" role="status" class="fw-bold">Submit</span>
+      <span
+        *ngIf="isSubmitSpin"
+        class="spinner-grow spinner-grow-sm"
+        aria-hidden="true"
+      ></span>
+    </button>
+
+    <div class="text-success">
+      <h1>{{ afterSubmit }}</h1>
+    </div>
+  </form>
+</div>
